@@ -1,15 +1,17 @@
 #include QMK_KEYBOARD_H
 
-#define _BASE 0
-#define _FUN 1
-#define _NUM 2
-#define _SYM 3
-#define _MOUSE 4
-#define _NAV 5
-#define _SYM_1 6
+
+enum layers {
+    _BASE,
+    _NUM,
+    _FUN,
+    _PROG,
+    _MOUSE,
+    _NAV
+};
+
 
 // Tap-dance
-#define HOME_A LGUI_T(KC_A)
 #define HOME_R LALT_T(KC_R)
 #define HOME_S LCTL_T(KC_S)
 #define HOME_T LSFT_T(KC_T)
@@ -17,28 +19,37 @@
 #define HOME_N LSFT_T(KC_N)
 #define HOME_E LCTL_T(KC_E)
 #define HOME_I LALT_T(KC_I)
-#define HOME_O LGUI_T(KC_O)
 
 // =============== Custom Tap-Hold Thumb Keys ===============
 // Left
 #define ESCNUM LT(_NUM, KC_ESC)
 #define SPCNAV LT(_NAV, KC_SPC)
-#define TABMOS LT(_MOUSE, KC_TAB)
+#define MOUSE MO(_MOUSE)
+#define FUN MO(_FUN)
 
 // Right
-#define ENTFUN LT(_FUN, KC_ENT)
-#define BSPSYM1 LT(_SYM_1, KC_BSPC)
-#define SYM MO(_SYM)
+#define PROGENT LT(_PROG, KC_ENT)
+#define BSPCSFT LSFT_T(KC_BSPC)
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
         _______, KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,               KC_J,    KC_L,    KC_U,     KC_Y,    KC_END,  _______,
-        _______, HOME_A,  HOME_R,  HOME_S,  HOME_T,  KC_G,               KC_M,    HOME_N,  HOME_E,   HOME_I,  HOME_O,  _______,
-        _______, KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,               KC_K,    KC_H,    KC_COMM,  KC_DOT,  KC_SLSH, _______,
-                          _______, _______,                                                _______,  _______,
-                                            ESCNUM,  SPCNAV,             ENTFUN,  BSPSYM1,
-                                            _______, TABMOS,             SYM,     _______,
+        KC_TAB,  KC_A,    HOME_R,  HOME_S,  HOME_T,  KC_G,               KC_M,    HOME_N,  HOME_E,   HOME_I,  KC_O  ,  KC_QUOT,
+        KC_LCTL, KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,               KC_K,    KC_H,    KC_COMM,  KC_DOT,  KC_SLSH, KC_LSFT,
+                          KC_LGUI, KC_LALT,                                                KC_LALT,  KC_LGUI,
+                                            ESCNUM,  SPCNAV,             PROGENT, BSPCSFT,
+                                            _______, MOUSE,              FUN,     _______,
+                                            _______, _______,            _______, _______
+    ),
+
+    [_NUM] = LAYOUT(
+        _______, _______, _______, _______, _______, _______,            _______, KC_7,    KC_8,    KC_9,    KC_0,    QK_BOOT,
+        _______, _______, _______, _______, _______, _______,            _______, KC_4,    KC_5,    KC_6,    _______, _______,
+        _______, _______, _______, _______, _______, _______,            _______, KC_1,    KC_2,    KC_3,    _______, _______,
+                          _______, _______,                                                _______, _______,
+                                            _______, _______,            _______, _______,
+                                            _______, _______,            _______, _______,
                                             _______, _______,            _______, _______
     ),
 
@@ -52,20 +63,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                             _______, _______,            _______, _______
     ),
 
-    [_NUM] = LAYOUT(
-        QK_BOOT, _______, _______, _______, _______, _______,            _______, KC_7,    KC_8,    KC_9,    _______, _______,
-        _______, _______, _______, _______, _______, _______,            _______, KC_4,    KC_5,    KC_6,    _______, _______,
-        _______, _______, _______, _______, _______, _______,            _______, KC_1,    KC_2,    KC_3,    _______, _______,
-                          _______, _______,                                                KC_0,    _______,
-                                            _______, _______,            _______, _______,
-                                            _______, _______,            _______, _______,
-                                            _______, _______,            _______, _______
-    ),
-
-    [_SYM] = LAYOUT(
-        _______, _______, KC_AMPR, KC_ASTR, _______, _______,            _______, _______, _______, _______, _______, QK_BOOT,
-        _______, _______, KC_DLR,  KC_PERC, KC_CIRC, _______,            _______, _______, _______, _______, _______, _______,
-        _______, _______, KC_EXLM, KC_AT,   KC_HASH, _______,            _______, _______, _______, _______, _______, _______,
+    [_PROG] = LAYOUT(
+        _______, KC_GRV,  KC_EQL,  KC_MINS, KC_QUOT, _______,            _______, _______, _______, _______, _______, QK_BOOT,
+        _______, KC_BSLS, KC_LPRN, KC_RPRN, KC_SCLN, _______,            _______, _______, _______, _______, _______, _______,
+        _______, _______, KC_LBRC, KC_RBRC, _______, _______,            _______, _______, _______, _______, _______, _______,
                           _______, _______,                                                _______, _______,
                                             _______, _______,            _______, _______,
                                             _______, _______,            _______, _______,
@@ -92,15 +93,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                             _______, _______,            _______, _______
     ),
 
-    [_SYM_1] = LAYOUT(
-        _______, KC_SCLN, _______, KC_MINS, _______, _______,            _______, _______, _______, _______, _______, QK_BOOT,
-        _______, KC_LBRC, KC_RBRC, KC_UNDS, KC_COLN, _______,            _______, _______, _______, _______, _______, _______,
-        _______, KC_LCBR, KC_RCBR, KC_LPRN, KC_RPRN, _______,            _______, _______, _______, _______, _______, _______,
-                          _______, _______,                                                _______, _______,
-                                            _______, _______,            _______, _______,
-                                            _______, _______,            _______, _______,
-                                            _______, _______,            _______, _______
-    ),
 };
 
 void persistent_default_layer_set(uint16_t default_layer) {
